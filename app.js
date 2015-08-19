@@ -11,8 +11,6 @@ var users = require('./routes/users');
 
 var app = express();
 
-var paper = require('paper');
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -75,15 +73,16 @@ io.sockets.on('connection', function (socket) {
     // (2): The server recieves a ping event
     // from the browser on this socket
     socket.on('ping', function ( data ) {
-  
-    console.log('socket: server recieves ping (2)');
-
-    // (3): Return a pong event to the browser
-    // echoing back the data from the ping event 
-    socket.emit( 'pong', data );   
-
-    console.log('socket: server sends pong (3)');
-
+      console.log('socket: server recieves ping (2)');
+      // (3): Return a pong event to the browser
+      // echoing back the data from the ping event 
+      socket.emit( 'pong', data );   
+      console.log('socket: server sends pong (3)');
     });
+
+    socket.on( 'drawCircle', function( data, session ) {
+        socket.broadcast.emit( 'drawCircle', data );
+    });
+
 });
 

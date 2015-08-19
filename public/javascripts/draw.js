@@ -1,10 +1,21 @@
 tool.maxDistance = 50;
 
+// Listen for 'drawCircle' events
+// created by other users
+io.on( 'drawCircle', function( data ) {
+
+    console.log( data );
+
+    // Draw the circle using the data sent
+    // from another user
+    drawCircle( data.x, data.y, data.radius, data.color );
+    
+})
+
 // Returns an object specifying a semi-random color
 // The color will always have a red value of 0
 // and will be semi-transparent (the alpha value)
 function randomColor() {
-    
     return {
         red: 0,
         green: Math.random(),
@@ -38,6 +49,22 @@ function drawCircle( x, y, radius, color ) {
     view.draw();
 } 
  
+// This function sends the data for a circle to the server
+// so that the server can broadcast it to every other user
 function emitCircle( x, y, radius, color ) {
-    // We'll do something interesting with this shortly...
+
+    // Each Socket.IO connection has a unique session id
+    var sessionId = io.id;
+  
+    // An object to describe the circle's draw data
+    var data = {
+        x: x,
+        y: y,
+        radius: radius,
+        color: color
+    };
+
+    // send a 'drawCircle' event with data and sessionId to the server
+    io.emit( 'drawCircle', data, sessionId )
+
 }
