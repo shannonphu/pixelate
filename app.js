@@ -80,8 +80,8 @@ io.sockets.on('connection', function (socket) {
       console.log('socket: server sends pong (3)');
     });
 
-    socket.on( 'drawCircle', function( data, session ) {
-        socket.broadcast.emit( 'drawCircle', data );
+    socket.on( 'drawRect', function( data, session ) {
+        socket.broadcast.emit( 'drawRect', data );
     });
 
 });

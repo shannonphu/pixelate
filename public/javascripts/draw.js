@@ -1,14 +1,12 @@
 tool.maxDistance = 50;
 
-// Listen for 'drawCircle' events
+// Listen for 'drawRect' events
 // created by other users
-io.on( 'drawCircle', function( data ) {
-
-    console.log( data );
+io.on( 'drawRect', function( data ) {
 
     // Draw the circle using the data sent
     // from another user
-    drawCircle( data.x, data.y, data.radius, data.color );
+    drawRect( data.x, data.y, data.color );
     
 })
 
@@ -17,10 +15,10 @@ io.on( 'drawCircle', function( data ) {
 // and will be semi-transparent (the alpha value)
 function randomColor() {
     return {
-        red: 0,
+        red: Math.random(),
         green: Math.random(),
         blue: Math.random(),
-        alpha: ( Math.random() * 0.25 ) + 0.05
+        alpha: ( Math.random() * 0.5 ) + 0.05
     };
 }
 
@@ -30,28 +28,33 @@ function onMouseDrag(event) {
     // Take the click/touch position as the centre of our circle
     var x = event.middlePoint.x;
     var y = event.middlePoint.y;
+
     // The faster the movement, the bigger the circle
-    var radius = event.delta.length / 2;
+    var delta = event.delta.length / 3;
+
     // Generate our random color
     var color = randomColor();
     // Draw the circle 
-    drawCircle( x, y, radius, color );
-    // Pass the data for this circle
-    // to a special function for later
-    emitCircle( x, y, radius, color );
+    drawRect( x, y, delta, color );
+
+    // Pass the data for this circle to other current users
+    emitRect( x, y, color );
 } 
  
-function drawCircle( x, y, radius, color ) {
-    // Render the circle with Paper.js
-    var circle = new Path.Circle( new Point( x, y ), radius );
-    circle.fillColor = new RgbColor( color.red, color.green, color.blue, color.alpha );
-    // Refresh the view, so we always get an update, even if the tab is not in focus
-    view.draw();
+function drawRect( x, y, delta, color ) {
+    var dimension = 6;
+    var halfDim = dimension / 2;
+    // Render the rectangle with Paper.js
+    // var circle = new Path.Circle( new Point( x, y ), radius );
+    var rect = new Rectangle(new Point(x - halfDim, y - halfDim), new Point(x + delta, y + delta));
+    var path = new Path.Rectangle(rect);
+    path.fillColor = randomColor();
+    //path.selected = true;
 } 
  
 // This function sends the data for a circle to the server
 // so that the server can broadcast it to every other user
-function emitCircle( x, y, radius, color ) {
+function emitRect( x, y, color ) {
 
     // Each Socket.IO connection has a unique session id
     var sessionId = io.id;
@@ -60,11 +63,11 @@ function emitCircle( x, y, radius, color ) {
     var data = {
         x: x,
         y: y,
-        radius: radius,
+        //radius: radius,
         color: color
     };
 
     // send a 'drawCircle' event with data and sessionId to the server
-    io.emit( 'drawCircle', data, sessionId )
+    io.emit( 'drawRect', data, sessionId )
 
 }
