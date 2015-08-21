@@ -61,7 +61,7 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 // Set up socket.io
-var host = 8000;
+var host = 3000;
 var server = http.createServer(app).listen( host );
 var io = require('socket.io').listen(server, function() {
   console.log("Server listening on port " + app.get('port'));

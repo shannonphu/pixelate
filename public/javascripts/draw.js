@@ -58,7 +58,9 @@ function onMouseDrag(event) {
     for (var i = 0; i < 5; i++) {
         var a = signedNumber(10);
         var b = signedNumber(10);
-        drawRect( x + a, y + b, delta, randomColor() );
+        var surroundColor = randomColor();
+        drawRect( x + a, y + b, delta, surroundColor );
+        emitRect ( x + a, y + b, delta, surroundColor );
     };
 
     // Pass the data for this circle to other current users
